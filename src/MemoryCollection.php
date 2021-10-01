@@ -7,42 +7,7 @@ namespace Live\Collection;
  *
  * @package Live\Collection
  */
-class MemoryCollection implements CollectionInterface
-{
-    /**
-     * Collection data
-     *
-     * @var array
-     */
-    protected $data;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->data = [];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function get(string $index, $defaultValue = null)
-    {
-        if (!$this->has($index)) {
-            return $defaultValue;
-        }
-
-        return $this->data[$index];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function set(string $index, $value)
-    {
-        $this->data[$index] = $value;
-    }
+class MemoryCollection extends DataExpiration{
 
     /**
      * {@inheritDoc}
@@ -57,7 +22,7 @@ class MemoryCollection implements CollectionInterface
      */
     public function count(): int
     {
-        return count($this->data) + 1;
+        return count($this->data);
     }
 
     /**

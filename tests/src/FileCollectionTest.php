@@ -4,15 +4,16 @@ namespace Live\Collection;
 
 use PHPUnit\Framework\TestCase;
 
-class MemoryCollectionTest extends TestCase
+class FileCollectionTest extends TestCase
 {
+    private $file = 'C:\xampp\htdocs\php-test\tests\src\file-collection.txt';
     /**
      * @test
      * @doesNotPerformAssertions
      */
     public function objectCanBeConstructed()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection($this->file);
         return $collection;
     }
 
@@ -23,7 +24,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function dataCanBeAdded()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('index1', 'value');
         $collection->set('index2', 5);
         $collection->set('index3', true);
@@ -37,7 +38,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function dataCanBeRetrieved()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('index1', 'value');
 
         $this->assertEquals('value', $collection->get('index1'));
@@ -49,7 +50,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function inexistentIndexShouldReturnDefaultValue()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
 
         $this->assertNull($collection->get('index1'));
         $this->assertEquals('defaultValue', $collection->get('index1', 'defaultValue'));
@@ -61,7 +62,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function newCollectionShouldNotContainItems()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $this->assertEquals(0, $collection->count());
     }
 
@@ -71,7 +72,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function collectionWithItemsShouldReturnValidCount()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('index1', 'value');
         $collection->set('index2', 5);
         $collection->set('index3', true);
@@ -85,7 +86,7 @@ class MemoryCollectionTest extends TestCase
      */
     public function collectionCanBeCleaned()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection($this->file);
         $collection->set('index', 'value');
         $this->assertEquals(1, $collection->count());
 
@@ -99,20 +100,9 @@ class MemoryCollectionTest extends TestCase
      */
     public function addedItemShouldExistInCollection()
     {
-        $collection = new MemoryCollection();
+        $collection = new FileCollection();
         $collection->set('index', 'value');
 
         $this->assertTrue($collection->has('index'));
-    }
-
-    /**
-     * @test
-     * @depends dataCanBeAdded
-     */
-    public function dataHasExpired(){
-        $collection = new MemoryCollection();
-        $collection->set("index1","expires in 200ms", .2);
-        time_sleep_until(microtime(true) + .201 );
-        $this->assertNull($collection->get('index1'));
     }
 }
