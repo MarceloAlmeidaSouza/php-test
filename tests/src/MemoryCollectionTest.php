@@ -109,10 +109,11 @@ class MemoryCollectionTest extends TestCase
      * @test
      * @depends dataCanBeAdded
      */
-    public function dataHasExpired(){
+    public function dataHasExpired()
+    {
         $collection = new MemoryCollection();
-        $collection->set("index1","expires in 200ms", .2);
-        time_sleep_until(microtime(true) + .201 );
+        $collection->set("index1", "expires in 200ms", .2);
+        time_sleep_until(microtime(true) + .201);
         $this->assertNull($collection->get('index1'));
     }
 }

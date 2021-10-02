@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileCollectionTest extends TestCase
 {
-    private $file = 'C:\xampp\htdocs\php-test\tests\src\file-collection.txt';
+    private $file = '.\tests\src\file-collection.txt';
     /**
      * @test
      * @doesNotPerformAssertions
@@ -24,12 +24,11 @@ class FileCollectionTest extends TestCase
      */
     public function dataCanBeAdded()
     {
-        $collection = new FileCollection();
+        $collection = new FileCollection($this->file);
         $collection->set('index1', 'value');
         $collection->set('index2', 5);
         $collection->set('index3', true);
         $collection->set('index4', 6.5);
-        $collection->set('index5', ['data']);
     }
 
      /**
@@ -38,7 +37,7 @@ class FileCollectionTest extends TestCase
      */
     public function dataCanBeRetrieved()
     {
-        $collection = new FileCollection();
+        $collection = new FileCollection($this->file);
         $collection->set('index1', 'value');
 
         $this->assertEquals('value', $collection->get('index1'));
@@ -50,7 +49,8 @@ class FileCollectionTest extends TestCase
      */
     public function inexistentIndexShouldReturnDefaultValue()
     {
-        $collection = new FileCollection();
+        $collection = new FileCollection($this->file);
+        $collection->clean();
 
         $this->assertNull($collection->get('index1'));
         $this->assertEquals('defaultValue', $collection->get('index1', 'defaultValue'));
@@ -62,7 +62,8 @@ class FileCollectionTest extends TestCase
      */
     public function newCollectionShouldNotContainItems()
     {
-        $collection = new FileCollection();
+        $collection = new FileCollection($this->file);
+        $collection->clean();
         $this->assertEquals(0, $collection->count());
     }
 
@@ -72,7 +73,8 @@ class FileCollectionTest extends TestCase
      */
     public function collectionWithItemsShouldReturnValidCount()
     {
-        $collection = new FileCollection();
+        $collection = new FileCollection($this->file);
+        $collection->clean();
         $collection->set('index1', 'value');
         $collection->set('index2', 5);
         $collection->set('index3', true);
@@ -87,8 +89,9 @@ class FileCollectionTest extends TestCase
     public function collectionCanBeCleaned()
     {
         $collection = new FileCollection($this->file);
+        $count = $collection->count();
         $collection->set('index', 'value');
-        $this->assertEquals(1, $collection->count());
+        $this->assertEquals($count + 1, $collection->count());
 
         $collection->clean();
         $this->assertEquals(0, $collection->count());
@@ -100,9 +103,21 @@ class FileCollectionTest extends TestCase
      */
     public function addedItemShouldExistInCollection()
     {
-        $collection = new FileCollection();
+        $collection = new FileCollection($this->file);
         $collection->set('index', 'value');
 
         $this->assertTrue($collection->has('index'));
+    }
+
+     /**
+     * @test
+     * @depends objectCanBeConstructed
+     */
+    public function fileCollectionCanWriteDataToFile()
+    {
+        $collection = new FileCollection($this->file);
+        $collection->set('index', 'value');
+
+        $this->assertTrue($collection->writeDataToFile());
     }
 }

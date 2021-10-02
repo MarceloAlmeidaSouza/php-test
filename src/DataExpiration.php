@@ -2,7 +2,8 @@
 
 namespace Live\Collection;
 
-abstract class DataExpiration implements CollectionInterface{
+abstract class DataExpiration implements CollectionInterface
+{
      /**
      * Collection data
      *
@@ -47,5 +48,29 @@ abstract class DataExpiration implements CollectionInterface{
         if ($this->dataExpiration[$index] >= microtime(true)) {
             return $this->data[$index];
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function has(string $index)
+    {
+        return array_key_exists($index, $this->data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function count(): int
+    {
+        return count($this->data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clean()
+    {
+        $this->data = [];
     }
 }

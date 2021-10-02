@@ -9,7 +9,7 @@ namespace Live\Collection;
  */
 class FileCollection extends DataExpiration
 {
-        /**
+     /**
      * FileCollection filePath
      *
      * @var string
@@ -22,37 +22,24 @@ class FileCollection extends DataExpiration
     public function __construct($file = "")
     {
         parent::__construct();
-        
-        if ($file && file_exists($file)) {
+        $this->filePath = $file;
+        if (file_exists($file)) {
             $lines = file($file, FILE_IGNORE_NEW_LINES);
             foreach ($lines as $k => $v) {
                 $k++;
-                //$this->data["index{$k}"] = $v;
+                $this->set("index{$k}", $v);
             }
         }
     }
 
     /**
-     * {@inheritDoc}
+     * FileCollection writeDataToFile
      */
-    public function has(string $index)
+    public function writeDataToFile():bool
     {
-        return array_key_exists($index, $this->data);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function count(): int
-    {
-        return count($this->data);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function clean()
-    {
-        $this->data = [];
+        if (is_writable($this->filePath)) {
+            return file_put_contents($this->filePath, implode("\n", $this->data)."\n", FILE_APPEND);
+        }
+        return false;
     }
 }
